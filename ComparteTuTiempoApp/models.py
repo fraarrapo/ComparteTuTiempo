@@ -2,16 +2,16 @@ from django.db import models
 from django.core.validators import *
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.contrib.auth.models import AbstractUser
+from django.forms import ModelForm
+from django import forms
 
-# Create your models here.
-
-class Usuario(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+class Usuario(AbstractUser):
     ciudad = models.CharField(max_length=100)
     edad = models.PositiveIntegerField()
     contacto = models.CharField(max_length=50, blank=True)
-    saldo = models.PositiveIntegerField()
-    valoracion = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)])
+    saldo = models.PositiveIntegerField(default=0)
+    valoracion = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], null=True)
 
 class Categoria(models.Model):
     nombre = models.CharField(max_length=100)
@@ -33,6 +33,8 @@ class Intercambio(models.Model):
     idUsuarioDa = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='idUsuarioDa')
     inicio = models.DateTimeField()
     fin = models.DateTimeField()
+    confirmacion = models.BooleanField(default=False)
+    nota = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], null=True)
     def __str__(self):
                     return self.idUsuarioDa + "--> " + self.idUsuarioRecibe
 
