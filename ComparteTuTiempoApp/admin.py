@@ -1,7 +1,11 @@
 from django.contrib import admin
 from .models import *
+from django.contrib.auth.admin import UserAdmin
 
-admin.site.register(Usuario)
+class UsuarioAdmin(UserAdmin):
+    pass
+
+admin.site.register(Usuario, UsuarioAdmin)
 admin.site.register(Intercambio)
 admin.site.register(Servicio)
 admin.site.register(Mensaje)
