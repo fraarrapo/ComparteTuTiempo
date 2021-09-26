@@ -21,28 +21,29 @@ class Categoria(models.Model):
 class Servicio(models.Model):
     nombre = models.CharField(max_length=150)
     descripcion = models.CharField(validators=[MinLengthValidator(30)], max_length=500)
-    idUsuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    idUsuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     creacion = models.DateTimeField()
+    nota = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], null=True)
     categorias = models.ManyToManyField(Categoria)
     def __str__(self):
                 return self.nombre
 
 class Intercambio(models.Model):
     idServicio = models.ForeignKey(Servicio, on_delete=models.CASCADE)
-    idUsuarioRecibe = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='idUsuarioRecibe')
-    idUsuarioDa = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='idUsuarioDa')
+    idUsuarioRecibe = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='idUsuarioRecibe')
+    idUsuarioDa = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='idUsuarioDa')
     inicio = models.DateTimeField()
     fin = models.DateTimeField()
     confirmacion = models.BooleanField(default=False)
     nota = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], null=True)
     def __str__(self):
-                    return self.idUsuarioDa + "--> " + self.idUsuarioRecibe
+                    return self.idUsuarioDa.__str__() + "--> " + self.idUsuarioRecibe.__str__()
 
 class Conversacion(models.Model):
-    idUsuario1 = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='idUsuario1')
-    idUsuario2 = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='idUsuario2')
+    idUsuario1 = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='idUsuario1')
+    idUsuario2 = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='idUsuario2')
     def __str__(self):
-                    return self.idUsuario1 + " <------> " + self.idUsuario2
+                    return self.idUsuario1.__str__() + " <------> " + self.idUsuario2.__str__()
 
 class Mensaje(models.Model):
     idUsuarioOrigen = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='idUsuarioOrigen')
@@ -51,4 +52,4 @@ class Mensaje(models.Model):
     fechaHora = models.DateTimeField()
     contenido = models.CharField(max_length=500)
     def __str__(self):
-                    return self.idUsuarioOrigen + ": " + self.contenido
+                    return self.idUsuarioOrigen.__str__() + ": " + self.contenido

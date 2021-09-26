@@ -1,3 +1,5 @@
+import datetime
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -28,7 +30,24 @@ class FormNuevoUsuario(forms.ModelForm):
     def save(self, commit=True):
         # Save the provided password in hashed format
         user = super().save(commit=False)
-        user.set_password(self.cleaned_data["password1"])
+        user.set_password(self.cleaned_data["password2"])
         if commit:
             user.save()
         return user
+
+
+class FormNuevoServUsuario(forms.ModelForm):
+    OPTIONS = Categoria.objects.all()
+    categoria = forms.ModelMultipleChoiceField(OPTIONS)
+
+    class Meta:
+        model = Servicio
+        fields = ('nombre', 'descripcion')
+
+    def presave(self, usuario, commit=True):
+        servicio = super().save(commit=False)
+        servicio.creacion = datetime.datetime.now()
+        servicio.idUsuario = usuario
+        if commit:
+            servicio.save()
+        return servicio

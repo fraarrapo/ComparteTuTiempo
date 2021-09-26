@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ver servicios</title>
+</head>
+<body>
+{% include 'header.html' %}
+{% if servicios %}
+{% for s in servicios %}
+<div>
+<table cellspacing="15">
+    <tr>
+    <td>Servicio: {{s.nombre}} </td>
+    <td>Descripcion: {{s.descripcion}}</td>
+    </tr>
+</table>
+</div>
+{% endfor %}
+{% else %}
+No hay servicios aún
+{% endif %}
+</body>
+</html>
