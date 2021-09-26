@@ -1,0 +1,12 @@
+<header>
+<nav>
+	<a href="/">Inicio</a>   |
+	{% if not request.user.username %}
+	<a href="/registrar">Regístrate</a> |
+	<a href="/ingresar">Inicia sesion</a>   |
+	{% elif request.user.username %}
+	<a href="/nuevoServicio">Añade un nuevo servicio</a>   |
+	<a href="/salir">Cerrar sesion</a>   |
+	{% endif %}
+</nav>
+</header>

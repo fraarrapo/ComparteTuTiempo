@@ -7,6 +7,9 @@ from .models import *
 from .forms import *
 from django.http import HttpResponseRedirect
 
+def inicio(request):
+    return render(request,'inicio.html')
+
 def registro(request):
     if request.method=='POST':
         formulario = FormNuevoUsuario(request.POST)
@@ -45,3 +48,21 @@ def ingreso(request):
 def cerrar(request):
     logout(request)
     return HttpResponseRedirect('/')
+
+@login_required(login_url='/ingresar')
+def crearServicioUsuario(request):
+    if request.method=='POST':
+        formulario = FormNuevoServUsuario(request.POST)
+        if formulario.is_valid():
+            formulario.presave(usuario=request.user)
+            return HttpResponseRedirect('/')
+    else:
+        formulario = FormNuevoServUsuario()
+    context = {'formulario': formulario}
+    return render(request, 'formServicio.html', context)
+
+@login_required(login_url='/ingresar')
+def verServicios(request):
+    servicios = Servicio.objects.all()
+    context = {'servicios': servicios}
+    return render(request, 'verServicios.html', context)
