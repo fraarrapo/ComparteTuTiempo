@@ -38,11 +38,11 @@ class FormNuevoUsuario(forms.ModelForm):
 
 class FormNuevoServUsuario(forms.ModelForm):
     OPTIONS = Categoria.objects.all()
-    categoria = forms.ModelMultipleChoiceField(OPTIONS)
+    categorias = forms.ModelMultipleChoiceField(OPTIONS)
 
     class Meta:
         model = Servicio
-        fields = ('nombre', 'descripcion')
+        fields = ('nombre', 'descripcion', 'categorias')
 
     def presave(self, usuario, commit=True):
         servicio = super().save(commit=False)
@@ -50,4 +50,5 @@ class FormNuevoServUsuario(forms.ModelForm):
         servicio.idUsuario = usuario
         if commit:
             servicio.save()
+            servicio.categorias.add(*self.cleaned_data["categorias"])
         return servicio

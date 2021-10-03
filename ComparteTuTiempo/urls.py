@@ -25,4 +25,10 @@ urlpatterns = [
     path('', views.inicio),
     path('nuevoServicio/', views.crearServicioUsuario),
     path('servicios/', views.verServicios),
+    path('perfil/', views.verPerfil),
+    path('servicios/<int:id>/', views.servicio),
+    path('servicios/editar/<int:id>/', views.editServicioUsuario),
+    path('servicios/eliminar/<int:id>/', views.deleServicioUsuario),
+    path('exito', views.exito),
+    path('error', views.error),
 ]
