@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ver servicios</title>
+</head>
+<body>
+{% include 'header.html' %}
+<div>
+    <table cellspacing="15">
+        <tr>
+            <td>Servicio: {{s.nombre}} </td>
+            <td>Descripcion: {{s.descripcion}}</td>
+            <td>Fecha y hora de creación: {{s.creacion}}</td>
+            <td>Categorías: {% for categoria in s.categorias.all %}{{ categoria }}<br/>{% endfor %}
+            {% if not s.nota %}
+            <td>Nota: Todavía no ha recibido valoraciones</td>
+            {% elif s.nota %}
+            <td>Nota: {{s.nota}}</td>
+            {% endif%}
+        </tr>
+    </table>
+    <a href="/servicios/editar/{{s.id}}">Editar el servicio </a>
+    <form onsubmit="return confirm('Usted va a eliminar su servicio');" id='formulario' method='post' action=''>{% csrf_token %}
+        <input type='hidden' value='{{s.id}}' name='id'>
+        <p><input type='submit' value='Eliminar el servicio'/></p>
+    </form>
+</div>
+</body>
+</html>
