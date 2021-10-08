@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ver servicios</title>
+</head>
+<body>
+{% include 'header.html' %}
+{% if request.user.notificacion_set %}
+<div>
+    <table cellspacing="15">
+        {% for notificacion in request.user.notificacion_set.all %}
+        <tr>
+            <td><a href="{{notificacion.url}}"> {{ notificacion }}</a><br/></td>
+            <td><form id='formulario' method='post' action=''>{% csrf_token %}
+                    <input type='hidden' value='{{notificacion.id}}' name='id'>
+                    <p><input type='submit' value='Eliminar notificación'/></p>
+                </form></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% else %}
+No hay notificaciones
+{% endif %}
+</body>
+</html>

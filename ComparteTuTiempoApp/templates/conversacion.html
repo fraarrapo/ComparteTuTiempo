@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Conversación</title>
+</head>
+<body>
+{% include 'header.html' %}
+{% if mensajes %}
+{% for m in mensajes %}
+<div>
+    <table cellspacing="15">
+        {% ifequal m.idUsuarioOrigen request.user %}
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td>Mensaje de <b>{{m.idUsuarioOrigen}}</b> el {{m.fechaHora}}: {{m.contenido}}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td>Mensaje de <b>{{m.idUsuarioOrigen}}</b> el {{m.fechaHora}}: {{m.contenido}}</td>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        </tr>
+        {% endifequal %}
+    </table>
+</div>
+{% endfor %}
+{% else %}
+No hay mensajes aún
+{% endif %}
+<form id='formulario' method='post' action=''>{% csrf_token %}
+    <table>{{formulario}}</table>
+    <p><input type='submit' value='Enviar'/></p>
+</form>
+</body>
+</html>
