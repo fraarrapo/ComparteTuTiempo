@@ -13,6 +13,13 @@ class Usuario(AbstractUser):
     saldo = models.PositiveIntegerField(default=0)
     valoracion = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], null=True)
 
+class Notificacion(models.Model):
+    descripcion = models.CharField(max_length=300)
+    idUsuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    url = models.CharField(max_length=200, blank=True, null=True)
+    def __str__(self):
+        return self.descripcion
+
 class Categoria(models.Model):
     nombre = models.CharField(max_length=100)
     def __str__(self):

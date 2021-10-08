@@ -29,6 +29,9 @@ urlpatterns = [
     path('servicios/<int:id>/', views.servicio),
     path('servicios/editar/<int:id>/', views.editServicioUsuario),
     path('servicios/eliminar/<int:id>/', views.deleServicioUsuario),
-    path('exito', views.exito),
-    path('error', views.error),
+    path('exito/', views.exito),
+    path('error/', views.error),
+    path('conversaciones/', views.conversaciones),
+    path('conversaciones/<slug:username>/', views.conversacion),
+    path('notificaciones/', views.notificaciones),
 ]

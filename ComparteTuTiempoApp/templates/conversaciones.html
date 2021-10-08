@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Conversaciones</title>
+</head>
+<body>
+{% include 'header.html' %}
+{% if conversaciones %}
+{% for c in conversaciones %}
+<div>
+    <table cellspacing="15">
+        <tr>
+            {% ifequal c.idUsuario1 request.user %}
+            <td><a href="{{c.idUsuario2.username}}">Conversación con {{c.idUsuario2}}</a></td>
+            {% else %}
+            <td><a href="{{c.idUsuario1.username}}">Conversación con {{c.idUsuario1}}</a></td>
+            {% endifequal %}
+        </tr>
+    </table>
+</div>
+{% endfor %}
+{% else %}
+No hay conversaciones aún
+{% endif %}
+</body>
+</html>

@@ -1,4 +1,4 @@
-import datetime
+from django.utils import timezone
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
@@ -46,9 +46,25 @@ class FormNuevoServUsuario(forms.ModelForm):
 
     def presave(self, usuario, commit=True):
         servicio = super().save(commit=False)
-        servicio.creacion = datetime.datetime.now()
+        servicio.creacion = timezone.now()
         servicio.idUsuario = usuario
         if commit:
             servicio.save()
             servicio.categorias.add(*self.cleaned_data["categorias"])
         return servicio
+
+class FormNuevoMensaje(forms.ModelForm):
+
+    class Meta:
+        model = Mensaje
+        fields = ('contenido',)
+
+    def save(self, conversacion, usuario1, usuario2, commit=True):
+        mensaje = super().save(commit=False)
+        mensaje.idUsuarioOrigen = usuario1
+        mensaje.fechaHora = timezone.now()
+        mensaje.idUsuarioDestino = usuario2
+        mensaje.idConversacion = conversacion
+        if commit:
+            mensaje.save()
+        return mensaje

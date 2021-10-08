@@ -7,6 +7,10 @@
 	{% elif request.user.username %}
 	<a href="/nuevoServicio">Añade un nuevo servicio</a>   |
 	<a href="/perfil">Ver mi perfil</a>   |
+	{% if request.user.notificacion_set %}
+	<a href="/notificaciones">{{request.user.notificacion_set.all.count}}</a>   |
+	{% endif %}
+	<a href="/conversaciones">Conversaciones</a>   |
 	<a href="/salir">Cerrar sesion</a>   |
 	{% endif %}
 </nav>

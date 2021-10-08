@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
@@ -116,3 +117,45 @@ def exito(request):
 
 def error(request):
     return render(request, 'error.html')
+
+@login_required(login_url='/ingresar')
+def conversaciones(request):
+    conversaciones = Conversacion.objects.filter(Q(idUsuario1=request.user.id) | Q(idUsuario2=request.user.id))
+    context = {'conversaciones': conversaciones}
+    return render(request, 'conversaciones.html', context)
+
+@login_required(login_url='/ingresar')
+def conversacion(request, username):
+    usuario2 = Usuario.objects.get(username=username)
+    if Conversacion.objects.filter((Q(idUsuario1=request.user) & Q(idUsuario2=usuario2)) | (Q(idUsuario1=usuario2) & Q(idUsuario2=request.user))).exists():
+        conversacion = Conversacion.objects.get((Q(idUsuario1=request.user) & Q(idUsuario2=usuario2)) | (Q(idUsuario1=usuario2) & Q(idUsuario2=request.user)))
+        if request.method=='POST':
+             form = FormNuevoMensaje(request.POST)
+             if form.is_valid():
+                 form.save(usuario1=request.user, usuario2=usuario2, conversacion= conversacion)
+                 notificacion = Notificacion(descripcion="Ha recibido un nuevo mensaje de " + request.user.username, idUsuario=usuario2, url="/conversaciones/"+request.user.username)
+                 notificacion.save()
+                 return HttpResponseRedirect('/conversaciones/' + usuario2.username)
+        else:
+            form = FormNuevoMensaje()
+            mensajes = Mensaje.objects.filter(idConversacion=conversacion).order_by('fechaHora')
+            Notificacion.objects.filter(Q(idUsuario=request.user) & Q(descripcion="Ha recibido un nuevo mensaje de " + usuario2.username)).delete()
+            print(request.user)
+            print("Ha recibido un nuevo mensaje de " + request.user.username)
+            context = {'mensajes': mensajes, 'formulario': form}
+            return render(request, 'conversacion.html', context)
+    else:
+        conversacion = Conversacion(idUsuario1=request.user, idUsuario2=usuario2)
+        conversacion.save()
+        return HttpResponseRedirect('/conversaciones/'+usuario2.username)
+
+@login_required(login_url='/ingresar')
+def notificaciones(request):
+    if request.method=='POST':
+        if Notificacion.objects.get(id=request.POST.get('id')).idUsuario == request.user:
+            Notificacion.objects.filter(id=request.POST.get('id')).delete()
+            return HttpResponseRedirect('/notificaciones')
+        else:
+            return HttpResponseRedirect('/error')
+    else:
+        return render(request, 'notificaciones.html')
