@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ver intercambio</title>
+</head>
+<body>
+{% include 'header.html' %}
+<div>
+    <table cellspacing="15">
+        <tr>
+            <td>Intercambio entre {{i.idUsuarioDa}} y {{i.idUsuarioRecibe}} </td>
+            <td>Servicio: {{i.idServicio}}</td>
+            <td>Fecha y hora de inicio: {{i.inicio}}</td>
+            <td>Fecha y hora de fin: {{i.fin}}</td>
+            {% if not i.nota %}
+            <td>Nota: Todavía no ha recibido valoraciones</td>
+            {% elif i.nota %}
+            <td>Nota: {{i.nota}}</td>
+            {% endif%}
+        </tr>
+    </table>
+    {% if i.confirmacion == 0 and request.user == i.idUsuarioDa %}
+    <a>INTERCAMBIO POR CONFIRMAR</a>
+    {% if mensaje %}
+    <p>{{ mensaje }}</p>
+    {% endif%}
+    <form onsubmit="return confirm('Usted va a confirmar este intercambio');" id='formulario1' method='post' action=''>{% csrf_token %}
+        <input type='hidden' value='{{s.id}}' name='id1'>
+        <p><input type='submit' value='Confirmar el intercambio'/></p>
+    </form>
+    <form onsubmit="return confirm('Usted va a cancelar este intercambio');" id='formulario2' method='post' action=''>{% csrf_token %}
+        <input type='hidden' value='{{s.id}}' name='id2'>
+        <p><input type='submit' value='Cancelar el intercambio'/></p>
+    </form>
+    {% elif request.user == i.idUsuarioRecibe and i.confirmacion == 0 %}
+    <a>ESPERANDO CONFIRMACIÓN</a>
+    <form onsubmit="return confirm('Usted va a cancelar este intercambio');" id='formulario2' method='post' action=''>{% csrf_token %}
+        <input type='hidden' value='{{s.id}}' name='id2'>
+        <p><input type='submit' value='Cancelar el intercambio'/></p>
+    </form>
+    {% elif i.confirmacion == 1 %}
+    <a>INTERCAMBIO CONFIRMADO</a>
+    <form onsubmit="return confirm('Usted va a cancelar este intercambio');" id='formulario2' method='post' action=''>{% csrf_token %}
+        <input type='hidden' value='{{s.id}}' name='id2'>
+        <p><input type='submit' value='Cancelar el intercambio'/></p>
+    </form>
+    {% elif i.confirmacion == 2 and request.user == i.idUsuarioRecibe %}
+    <a>VALORA ESTE INTERCAMBIO</a></br>
+    <form id='formulario3' method='post' action=''>{% csrf_token %}
+        <p><input type="number" step="0.1" min="0" max="5" name="nota">
+        <input type='submit' value='Valorar'/></p>
+    </form>
+    {% elif i.confirmacion == 2 and request.user == i.idUsuarioRecibe %}
+    <a>INTERCAMBIO POR VALORAR</a>
+    {% elif i.confirmacion == 3 %}
+    <a>INTERCAMBIO FINALIZADO</a>
+    {% elif i.confirmacion == 4 %}
+    <a>INTERCAMBIO CANCELADO</a>
+    {% endif %}
+</div>
+</body>
+</html>

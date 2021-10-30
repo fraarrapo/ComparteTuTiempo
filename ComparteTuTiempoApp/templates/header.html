@@ -1,12 +1,14 @@
 <header>
 <nav>
 	<a href="/">Inicio</a>   |
+	<a href="/servicios">Ver servicios</a>   |
 	{% if not request.user.username %}
 	<a href="/registrar">Regístrate</a> |
 	<a href="/ingresar">Inicia sesion</a>   |
 	{% elif request.user.username %}
 	<a href="/nuevoServicio">Añade un nuevo servicio</a>   |
 	<a href="/perfil">Ver mi perfil</a>   |
+	<a>Saldo: {{request.user.saldo}} </a>   |
 	{% if request.user.notificacion_set %}
 	<a href="/notificaciones">{{request.user.notificacion_set.all.count}}</a>   |
 	{% endif %}

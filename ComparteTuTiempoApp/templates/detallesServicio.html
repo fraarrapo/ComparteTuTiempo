@@ -18,13 +18,21 @@
             {% elif s.nota %}
             <td>Nota: {{s.nota}}</td>
             {% endif%}
+            <td>Usuario: {{s.idUsuario.last_login}} </td>
         </tr>
     </table>
+    {% if request.user == s.idUsuario %}
     <a href="/servicios/editar/{{s.id}}">Editar el servicio </a>
+    {% if mensaje %}
+    <p>{{mensaje}}</p>
+    {% endif %}
     <form onsubmit="return confirm('Usted va a eliminar su servicio');" id='formulario' method='post' action=''>{% csrf_token %}
         <input type='hidden' value='{{s.id}}' name='id'>
-        <p><input type='submit' value='Eliminar el servicio'/></p>
+        <p><input type='submit' value='Eliminar el servicio' name='boton'/></p>
     </form>
+    {% elif request.user != s.idUsuario %}
+    <a href="/servicios/crearIntercambio/{{s.id}}">Solicitar intercambio </a>
+    {% endif %}
 </div>
 </body>
 </html>

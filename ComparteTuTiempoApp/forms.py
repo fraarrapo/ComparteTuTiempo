@@ -1,4 +1,5 @@
 from django.utils import timezone
+from django.db.models import Q
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
@@ -38,7 +39,7 @@ class FormNuevoUsuario(forms.ModelForm):
 
 class FormNuevoServUsuario(forms.ModelForm):
     OPTIONS = Categoria.objects.all()
-    categorias = forms.ModelMultipleChoiceField(OPTIONS)
+    categorias = forms.ModelMultipleChoiceField(OPTIONS, required=False)
 
     class Meta:
         model = Servicio
@@ -68,3 +69,53 @@ class FormNuevoMensaje(forms.ModelForm):
         if commit:
             mensaje.save()
         return mensaje
+
+class DateTimeInput(forms.DateTimeInput):
+    input_type = 'datetime-local'
+
+class FormNuevoIntercambio(forms.ModelForm):
+    inicio = forms.DateTimeField(widget=DateTimeInput)
+    fin = forms.DateTimeField(widget=DateTimeInput)
+    class Meta:
+        model = Intercambio
+        fields = ('inicio', 'fin')
+
+    def validate(self, saldo):
+        inicioForm = self.cleaned_data['inicio']
+        finForm = self.cleaned_data['fin']
+        if inicioForm < timezone.now():
+            self.add_error('inicio', "La fecha no puede ser anterior al día de hoy")
+            return False
+        elif finForm < inicioForm:
+            self.add_error('fin', "El fin no puede ser anterior al inicio")
+            return False
+        elif Intercambio.objects.filter(Q(inicio__range=[inicioForm, finForm]) | Q(fin__range=[inicioForm, finForm]) | Q(Q(inicio__lte=inicioForm) & Q(fin__gte=finForm)) | Q(Q(inicio__gte=inicioForm) & Q(fin__lte=finForm))).count()>=1:
+            self.add_error('inicio', "Ya tiene un intercambio en este rango")
+            return False
+        elif int((finForm-inicioForm).total_seconds()//60)>saldo:
+            self.add_error('inicio', "El tiempo del intercambio es superior a su saldo disponible")
+            return False
+        return True
+
+    def save(self, servicio, usuarioRecibe, commit=True):
+        intercambio = super().save(commit=False)
+        intercambio.idUsuarioDa = servicio.idUsuario
+        intercambio.idServicio = servicio
+        intercambio.idUsuarioRecibe = usuarioRecibe
+        if commit:
+            intercambio.save()
+        return intercambio
+
+class FormBusqueda(forms.Form):
+    descripcion = forms.CharField(max_length=500, required=False, label='Palabras clave')
+    ciudad = forms.CharField(max_length=500, required=False)
+    edad = forms.IntegerField(min_value=0, required=False)
+    OPTIONS = Categoria.objects.all()
+    categorias = forms.ModelMultipleChoiceField(OPTIONS, required=False)
+    lista=(
+        ("-creacion", "Ultimas publicaciones"),
+        ("-nota", "Nota"),
+        ("-idUsuario__last_login", "Última conexión del usuario"),
+    )
+    orden = forms.ChoiceField(choices=lista, label='Ordenar por:')
+

@@ -31,7 +31,7 @@ class Servicio(models.Model):
     idUsuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     creacion = models.DateTimeField()
     nota = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], null=True)
-    categorias = models.ManyToManyField(Categoria)
+    categorias = models.ManyToManyField(Categoria, blank=True)
     def __str__(self):
                 return self.nombre
 
@@ -41,7 +41,7 @@ class Intercambio(models.Model):
     idUsuarioDa = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='idUsuarioDa')
     inicio = models.DateTimeField()
     fin = models.DateTimeField()
-    confirmacion = models.BooleanField(default=False)
+    confirmacion = models.PositiveIntegerField(default=0)
     nota = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], null=True)
     def __str__(self):
                     return self.idUsuarioDa.__str__() + "--> " + self.idUsuarioRecibe.__str__()
