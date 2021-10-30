@@ -20,5 +20,19 @@
 {% else %}
 No hay servicios aún
 {% endif %}
+{% if intercambios %}
+{% for i in intercambios %}
+<div>
+    <table cellspacing="15">
+        <tr>
+            <td><a href="/intercambios/{{i.id}}">Intercambio: {{i}} </a></td>
+            <td>Fecha y hora: {{i.inicio}}</td>
+        </tr>
+    </table>
+</div>
+{% endfor %}
+{% else %}
+No hay intercambios aún
+{% endif %}
 </body>
 </html>

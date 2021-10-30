@@ -6,12 +6,16 @@
 </head>
 <body>
 {% include 'header.html' %}
+<form id='formulario_orden' method='post' action=''>{% csrf_token %}
+    <table>{{formulario_orden}}</table>
+    <p><input type='submit' value='Ordenar por: '/></p>
+</form>
 {% if servicios %}
 {% for s in servicios %}
 <div>
 <table cellspacing="15">
     <tr>
-    <td>Servicio: {{s.nombre}} </td>
+    <td><a href="/servicios/{{s.id}}">Servicio: {{s.nombre}} </a></td>
     <td>Descripcion: {{s.descripcion}}</td>
     </tr>
 </table>
@@ -20,5 +24,10 @@
 {% else %}
 No hay servicios aún
 {% endif %}
+
+<form id='formulario' method='post' action=''>{% csrf_token %}
+    <table>{{formulario}}</table>
+    <p><input type='submit' value='Buscar'/></p>
+</form>
 </body>
 </html>

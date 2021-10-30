@@ -9,7 +9,7 @@
 {% if request.user.notificacion_set %}
 <div>
     <table cellspacing="15">
-        {% for notificacion in request.user.notificacion_set.all %}
+        {% for notificacion in notificaciones %}
         <tr>
             <td><a href="{{notificacion.url}}"> {{ notificacion }}</a><br/></td>
             <td><form id='formulario' method='post' action=''>{% csrf_token %}
