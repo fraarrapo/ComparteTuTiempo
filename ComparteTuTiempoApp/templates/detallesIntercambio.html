@@ -39,24 +39,27 @@
         <input type='hidden' value='{{s.id}}' name='id2'>
         <p><input type='submit' value='Cancelar el intercambio'/></p>
     </form>
-    {% elif i.confirmacion == 1 %}
+    {% elif i.confirmacion == 1 and not valorar%}
     <a>INTERCAMBIO CONFIRMADO</a>
     <form onsubmit="return confirm('Usted va a cancelar este intercambio');" id='formulario2' method='post' action=''>{% csrf_token %}
         <input type='hidden' value='{{s.id}}' name='id2'>
         <p><input type='submit' value='Cancelar el intercambio'/></p>
     </form>
-    {% elif i.confirmacion == 2 and request.user == i.idUsuarioRecibe %}
+    {% elif i.confirmacion == 1 and request.user == i.idUsuarioRecibe and valorar%}
     <a>VALORA ESTE INTERCAMBIO</a></br>
     <form id='formulario3' method='post' action=''>{% csrf_token %}
         <p><input type="number" step="0.1" min="0" max="5" name="nota">
         <input type='submit' value='Valorar'/></p>
     </form>
-    {% elif i.confirmacion == 2 and request.user == i.idUsuarioRecibe %}
+    {% elif i.confirmacion == 1 and request.user == i.idUsuarioDa and valorar%}
     <a>INTERCAMBIO POR VALORAR</a>
-    {% elif i.confirmacion == 3 %}
+    {% elif i.confirmacion == 2 %}
     <a>INTERCAMBIO FINALIZADO</a>
-    {% elif i.confirmacion == 4 %}
+    {% elif i.confirmacion == 3 %}
     <a>INTERCAMBIO CANCELADO</a>
+    {% endif %}
+    {% if valorar %}
+    <p>ENTRO</p>
     {% endif %}
 </div>
 </body>

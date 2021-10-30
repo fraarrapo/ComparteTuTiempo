@@ -8,7 +8,7 @@ from django import forms
 
 class Usuario(AbstractUser):
     ciudad = models.CharField(max_length=100)
-    edad = models.PositiveIntegerField()
+    edad = models.PositiveIntegerField(default=0)
     contacto = models.CharField(max_length=50, blank=True)
     saldo = models.PositiveIntegerField(default=0)
     valoracion = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], null=True)

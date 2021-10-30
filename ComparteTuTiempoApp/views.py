@@ -190,8 +190,6 @@ def crearIntercambioUsuario(request, id):
             inter = formulario.save(servicio=servi, usuarioRecibe=request.user)
             notificacion = Notificacion(descripcion="Ha recibido una propuesta de intercambio " + request.user.username, idUsuario=servi.idUsuario, url="/intercambios/"+str(inter.id))
             notificacion.save()
-            request.user.saldo = request.user.saldo-int((formulario.cleaned_data['fin']-formulario.cleaned_data['inicio']).total_seconds()//60)
-            request.user.save()
             return HttpResponseRedirect('/exito')
     else:
         formulario = FormNuevoIntercambio()
@@ -211,7 +209,7 @@ def intercambio(request, id):
                 elif inter.inicio<timezone.now():
                     i = Intercambio.objects.get(id=id)
                     context = {'i': i, 'mensaje': "La fecha solicitada para el intercambio ha pasado"}
-                    inter.confirmacion = 4
+                    inter.confirmacion = 3
                     inter.save()
                     return render(request, 'detallesIntercambio.html', context)
                 else:
@@ -219,30 +217,32 @@ def intercambio(request, id):
                     inter.save()
                     notificacion = Notificacion(descripcion="El usuario " + request.user.username + " ha confirmado su intercambio", idUsuario=inter.idUsuarioRecibe, url="/intercambios/"+str(id))
                     notificacion.save()
+                    inter.idUsuarioRecibe.saldo = inter.idUsuarioRecibe.saldo-int((inter.fin-inter.inicio).total_seconds()//60)
+                    inter.idUsuarioRecibe.save()
                     return HttpResponseRedirect('/intercambios/' + str(id))
             else:
                 return HttpResponseRedirect('/error')
         elif 'id2' in request.POST:
-            if inter.idUsuarioDa == request.user and inter.confirmacion != 3 and inter.confirmacion != 4:
+            if inter.idUsuarioDa == request.user and inter.confirmacion != 2 and inter.confirmacion != 3 and timezone.now()<inter.inicio:
                 notificacion = Notificacion(descripcion="El usuario " + request.user.username + " ha cancelado su intercambio", idUsuario=inter.idUsuarioRecibe, url="/intercambios/"+str(id))
                 notificacion.save()
-                inter.confirmacion = 4
+                inter.confirmacion = 3
                 inter.save()
                 inter.idUsuarioRecibe.saldo = inter.idUsuarioRecibe.saldo+int((inter.fin-inter.inicio).total_seconds()//60)
                 inter.idUsuarioRecibe.save()
                 return HttpResponseRedirect('/intercambios/' + str(id))
-            elif inter.idUsuarioRecibe == request.user and inter.confirmacion != 3 and inter.confirmacion != 4:
+            elif inter.idUsuarioRecibe == request.user and inter.confirmacion != 2 and inter.confirmacion != 3:
                 notificacion = Notificacion(descripcion="El usuario " + request.user.username + " ha cancelado su intercambio", idUsuario=inter.idUsuarioDa, url="/intercambios/"+str(id))
                 notificacion.save()
-                inter.confirmacion = 4
+                inter.confirmacion = 3
                 inter.save()
                 inter.idUsuarioRecibe.saldo = inter.idUsuarioRecibe.saldo+int((inter.fin-inter.inicio).total_seconds()//60)
                 inter.idUsuarioRecibe.save()
                 return HttpResponseRedirect('/intercambios/' + str(id))
             else:
                 return HttpResponseRedirect('/error')
-        elif 'nota' in request.POST and inter.idUsuarioRecibe==request.user and inter.confirmacion == 2:
-            inter.confirmacion=3
+        elif 'nota' in request.POST and inter.idUsuarioRecibe==request.user and inter.confirmacion == 1:
+            inter.confirmacion=2
             inter.nota=request.POST['nota']
             inter.save()
             inter.idServicio.nota = round(inter.idServicio.intercambio_set.aggregate(Avg('nota')).get('nota__avg'), 2)
@@ -257,6 +257,7 @@ def intercambio(request, id):
             return HttpResponseRedirect('/error')
     elif inter.idUsuarioDa == request.user or inter.idUsuarioRecibe == request.user:
         i = Intercambio.objects.get(id=id)
-        context = {'i': i}
+        valorar = timezone.now()>i.inicio
+        context = {'i': i, 'valorar': valorar}
         return render(request, 'detallesIntercambio.html', context)
     return HttpResponseRedirect('/error')
