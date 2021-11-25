@@ -8,10 +8,10 @@ from django import forms
 
 class Usuario(AbstractUser):
     ciudad = models.CharField(max_length=100)
-    edad = models.PositiveIntegerField(default=0)
-    contacto = models.CharField(max_length=50, blank=True)
-    saldo = models.PositiveIntegerField(default=0)
-    valoracion = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], null=True)
+    edad = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(200)])
+    contacto = models.CharField(max_length=300, blank=True)
+    saldo = models.PositiveIntegerField(default=30)
+    valoracion = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], null=True, blank=True)
 
 class Notificacion(models.Model):
     descripcion = models.CharField(max_length=300)
@@ -30,8 +30,9 @@ class Servicio(models.Model):
     descripcion = models.CharField(validators=[MinLengthValidator(30)], max_length=500)
     idUsuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     creacion = models.DateTimeField()
-    nota = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], null=True)
+    nota = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], null=True, blank=True)
     categorias = models.ManyToManyField(Categoria, blank=True)
+    estado = models.BooleanField(default=True)
     def __str__(self):
                 return self.nombre
 
@@ -42,7 +43,7 @@ class Intercambio(models.Model):
     inicio = models.DateTimeField()
     fin = models.DateTimeField()
     confirmacion = models.PositiveIntegerField(default=0)
-    nota = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], null=True)
+    nota = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)], null=True, blank=True)
     def __str__(self):
                     return self.idUsuarioDa.__str__() + "--> " + self.idUsuarioRecibe.__str__()
 
@@ -57,6 +58,6 @@ class Mensaje(models.Model):
     idUsuarioDestino = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='idUsuarioDestino')
     idConversacion = models.ForeignKey(Conversacion, on_delete=models.CASCADE)
     fechaHora = models.DateTimeField()
-    contenido = models.CharField(max_length=500)
+    contenido = models.CharField(max_length=500, blank=False)
     def __str__(self):
                     return self.idUsuarioOrigen.__str__() + ": " + self.contenido

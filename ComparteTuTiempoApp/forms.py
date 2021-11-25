@@ -13,6 +13,10 @@ import re
 class FormNuevoUsuario(forms.ModelForm):
     password1 = forms.CharField(label='Contraseña', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Confirma tu contraseña', widget=forms.PasswordInput)
+    first_name = forms.CharField(label='Nombre', required=True, max_length=100)
+    last_name = forms.CharField(label='Apellidos', required=True, max_length=100)
+    edad = forms.IntegerField(min_value=0, max_value=200)
+    contacto = forms.CharField(max_length=300, widget=forms.Textarea(attrs={'placeholder': 'Cómo puedes reunirte para los intercambios. Skype, Discord, Whatsapp, llamada de teléfono...', 'rows': '3'}), required=False)
 
     class Meta:
         model = Usuario
@@ -39,6 +43,7 @@ class FormNuevoUsuario(forms.ModelForm):
 
 class FormNuevoServUsuario(forms.ModelForm):
     OPTIONS = Categoria.objects.all()
+    descripcion = forms.CharField(max_length=500, widget=forms.Textarea(attrs={'placeholder': 'Haz una descripción de tu servicio. La gente lo podrá encontrar buscando palabras clave', 'rows': '5'}))
     categorias = forms.ModelMultipleChoiceField(OPTIONS, required=False)
 
     class Meta:
@@ -55,6 +60,7 @@ class FormNuevoServUsuario(forms.ModelForm):
         return servicio
 
 class FormNuevoMensaje(forms.ModelForm):
+    contenido = forms.CharField(max_length=500, widget=forms.Textarea(attrs={'placeholder': 'Escribe tu mensaje', 'rows': '3'}))
 
     class Meta:
         model = Mensaje
@@ -80,7 +86,7 @@ class FormNuevoIntercambio(forms.ModelForm):
         model = Intercambio
         fields = ('inicio', 'fin')
 
-    def validate(self, saldo):
+    def validate(self, saldo, usuarioRecibe):
         inicioForm = self.cleaned_data['inicio']
         finForm = self.cleaned_data['fin']
         if inicioForm < timezone.now():
@@ -89,7 +95,7 @@ class FormNuevoIntercambio(forms.ModelForm):
         elif finForm < inicioForm:
             self.add_error('fin', "El fin no puede ser anterior al inicio")
             return False
-        elif Intercambio.objects.filter(Q(inicio__range=[inicioForm, finForm]) | Q(fin__range=[inicioForm, finForm]) | Q(Q(inicio__lte=inicioForm) & Q(fin__gte=finForm)) | Q(Q(inicio__gte=inicioForm) & Q(fin__lte=finForm))).count()>=1:
+        elif Intercambio.objects.filter(Q(inicio__range=[inicioForm, finForm]) | Q(fin__range=[inicioForm, finForm]) | Q(Q(inicio__lte=inicioForm) & Q(fin__gte=finForm)) | Q(Q(inicio__gte=inicioForm) & Q(fin__lte=finForm)) & Q(Q(idUsuarioDa=usuarioRecibe) | Q(idUsuarioRecibe=usuarioRecibe)) & Q(confirmacion=1)).count()>=1:
             self.add_error('inicio', "Ya tiene un intercambio en este rango")
             return False
         elif int((finForm-inicioForm).total_seconds()//60)>saldo:
@@ -109,7 +115,7 @@ class FormNuevoIntercambio(forms.ModelForm):
 class FormBusqueda(forms.Form):
     descripcion = forms.CharField(max_length=500, required=False, label='Palabras clave')
     ciudad = forms.CharField(max_length=500, required=False)
-    edad = forms.IntegerField(min_value=0, required=False)
+    edad = forms.IntegerField(min_value=0, max_value=200, required=False)
     OPTIONS = Categoria.objects.all()
     categorias = forms.ModelMultipleChoiceField(OPTIONS, required=False)
     lista=(
@@ -119,3 +125,25 @@ class FormBusqueda(forms.Form):
     )
     orden = forms.ChoiceField(choices=lista, label='Ordenar por:')
 
+class FormEditUsuario(forms.ModelForm):
+    first_name = forms.CharField(label='Nombre', required=True, max_length=100)
+    last_name = forms.CharField(label='Apellidos', required=True, max_length=100)
+    edad = forms.IntegerField(min_value=0, max_value=200)
+    contacto = forms.CharField(max_length=300, widget=forms.Textarea(attrs={'placeholder': 'Cómo puedes reunirte para los intercambios. Skype, Discord, Whatsapp, llamada de teléfono...', 'rows': '3'}), required=False)
+
+    class Meta:
+        model = Usuario
+        fields = ('username', 'email', 'first_name', 'last_name', 'ciudad', 'edad', 'contacto')
+
+
+class FormOrdenIntercambios(forms.Form):
+    descripcion = forms.CharField(max_length=500, required=False, label='Palabras clave')
+    OPTIONS = Categoria.objects.all()
+    categorias = forms.ModelMultipleChoiceField(OPTIONS, required=False)
+    lista=(
+        ("id", "Order de creación"),
+        ("-nota", "Nota"),
+        ("confirmacion", "Por estado"),
+        ("inicio", "Por fecha de inicio")
+    )
+    orden = forms.ChoiceField(choices=lista, label='Ordenar por:')
