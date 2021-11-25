@@ -26,6 +26,8 @@ SECRET_KEY = 'django-insecure-uigk5b=2qvkmyanxxhumrv=#tp&e+9u^%@)%k$%228upr45fb%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+ADMINS = [('Paco', 'pacoarroyozafra@gmail.com')]
+
 ALLOWED_HOSTS = []
 
 # Application definition
@@ -74,27 +76,27 @@ WSGI_APPLICATION = 'ComparteTuTiempo.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# DATABASES = {
-#   'default': {
-#        'ENGINE': 'django.db.backends.mysql',
-#        'NAME': 'tfg',
-#        'USER': 'root',
-#        'PASSWORD': 'practica',
-#        'HOST': 'localhost',
-#       'PORT': '3306',
-#   }
-# }
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'compartetutiempo',
-        'USER': 'administrador@compartetutiempo',
-        'PASSWORD': '123456aA$',
-        'HOST': 'compartetutiempo.mysql.database.azure.com',
-        'PORT': '3306',
-    }
+  'default': {
+       'ENGINE': 'django.db.backends.mysql',
+       'NAME': 'tfg',
+       'USER': 'root',
+       'PASSWORD': 'practica',
+       'HOST': 'localhost',
+      'PORT': '3306',
+  }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'compartetutiempo',
+#         'USER': 'administrador@compartetutiempo',
+#         'PASSWORD': '123456aA$',
+#         'HOST': 'compartetutiempo.mysql.database.azure.com',
+#         'PORT': '3306',
+#     }
+# }
 
 
 # Password validation

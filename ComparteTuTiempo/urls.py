@@ -39,3 +39,9 @@ urlpatterns = [
     path('intercambios/', views.intercambios),
     path('reiniciarCategorias/', views.reiniciarCategorias),
 ]
+
+handler404 = 'ComparteTuTiempoApp.views.error404'
+
+handler403 = 'ComparteTuTiempoApp.views.error403'
+
+handler400 = 'ComparteTuTiempoApp.views.error400'

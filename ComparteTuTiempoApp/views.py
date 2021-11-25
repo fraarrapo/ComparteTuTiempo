@@ -353,3 +353,12 @@ def reiniciarCategorias(request):
             categoria = Categoria(nombre=x)
             categoria.save()
         return HttpResponseRedirect('/exito')
+
+def error404(request,  *args, **kwargs):
+    return HttpResponseRedirect('/')
+
+def error403(request,  *args, **kwargs):
+    return HttpResponseRedirect('/')
+
+def error400(request,  *args, **kwargs):
+    return HttpResponseRedirect('/error')
