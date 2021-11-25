@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-uigk5b=2qvkmyanxxhumrv=#tp&e+9u^%@)%k$%228upr45fb%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -74,7 +74,7 @@ WSGI_APPLICATION = 'ComparteTuTiempo.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-#DATABASES = {
+# DATABASES = {
 #   'default': {
 #        'ENGINE': 'django.db.backends.mysql',
 #        'NAME': 'tfg',
@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'ComparteTuTiempo.wsgi.application'
 #        'HOST': 'localhost',
 #       'PORT': '3306',
 #   }
-#}
+# }
 
 DATABASES = {
     'default': {
