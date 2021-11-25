@@ -347,9 +347,9 @@ def intercambios(request):
 @staff_member_required
 def reiniciarCategorias(request):
     if request.user.is_staff:
-        f = open(settings.STATIC_ROOT+"\Categorias.txt", "r", encoding="utf-8")
+        categorias = ['Coche y Moto','Belleza','Libros','Cámaras y fotografía','Teléfonos móviles y accesorios','Coleccionismo','Electrónica','Arte','Alimentación y bebidas','Salud y cuidado personal','Hogar y Cocina','Diseño independiente','Industria, empresa y ciencia','Música','Oficina','Aire libre','Informática','Mascotas','Software','Deportes y aire libre','Bricolaje y herramientas','Videojuegos','Plantas y jardinería']
         Categoria.objects.all().delete()
-        for x in f:
+        for x in categorias:
             categoria = Categoria(nombre=x)
             categoria.save()
         return HttpResponseRedirect('/exito')
