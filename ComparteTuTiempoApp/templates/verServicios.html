@@ -1,33 +1,42 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="es">
 <head>
+    <link rel="stylesheet" href="{% static 'general.css' %}">
     <meta charset="UTF-8">
-    <title>Ver servicios</title>
+    <link rel="icon" href="{% static 'reloj.png' %}"><title>Ver servicios</title>
 </head>
 <body>
 {% include 'header.html' %}
-<form id='formulario_orden' method='post' action=''>{% csrf_token %}
-    <table>{{formulario_orden}}</table>
-    <p><input type='submit' value='Ordenar por: '/></p>
-</form>
-{% if servicios %}
-{% for s in servicios %}
 <div>
-<table cellspacing="15">
-    <tr>
-    <td><a href="/servicios/{{s.id}}">Servicio: {{s.nombre}} </a></td>
-    <td>Descripcion: {{s.descripcion}}</td>
-    </tr>
-</table>
+    <div class="container d-flex justify-content-center vertical-center">
+        <div class="row">
+            <div class="col-lg-5 col-12 text-center align-self-center">
+                <form ALIGN='center' id='formulario' method='post' action=''>{% csrf_token %}
+                    <table class="table table-responsive">{{formulario}}</table>
+                    <p><input class="btn btn-primary" type='submit' value='Buscar'/></p>
+                </form>
+            </div>
+            <div class="col-lg-7 col-12 text-center">
+                <h1>Explora los servicios ofrecidos</h1>
+                <div class="row border scrollable overflow-auto">
+                {% if servicios %}
+                {% for s in servicios %}
+                <div class="row border">
+                    <a class="btn btn-outline-primary boton" href="/servicios/{{s.id}}" role="button">
+                    <div><b>{{s.idUsuario.first_name}} {{s.idUsuario.last_name}}{% if s.idUsuario.ciudad %},
+                        {{s.idUsuario.ciudad}}{% endif %}{% if s.idUsuario.edad %}, {{s.idUsuario.edad}}{% endif %}</b></div>
+                    <div><b>{{s.nombre}}</b></div>
+                    <div>{{s.descripcion}}</div></a>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div>No hay servicios aún</div>
+                {% endif %}
+                    </div>
+            </div>
+        </div>
+    </div>
 </div>
-{% endfor %}
-{% else %}
-No hay servicios aún
-{% endif %}
-
-<form id='formulario' method='post' action=''>{% csrf_token %}
-    <table>{{formulario}}</table>
-    <p><input type='submit' value='Buscar'/></p>
-</form>
 </body>
 </html>

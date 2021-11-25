@@ -31,8 +31,11 @@ urlpatterns = [
     path('exito/', views.exito),
     path('error/', views.error),
     path('conversaciones/', views.conversaciones),
-    path('conversaciones/<slug:username>/', views.conversacion),
+    path('conversaciones/<int:id>/', views.conversacion),
     path('notificaciones/', views.notificaciones),
     path('servicios/crearIntercambio/<int:id>/', views.crearIntercambioUsuario),
     path('intercambios/<int:id>/', views.intercambio),
+    path('editarPerfil/', views.editUsuario),
+    path('intercambios/', views.intercambios),
+    path('reiniciarCategorias/', views.reiniciarCategorias),
 ]
