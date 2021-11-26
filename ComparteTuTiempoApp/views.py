@@ -115,8 +115,8 @@ def verPerfil(request):
 @login_required(login_url='/ingresar')
 def servicio(request, id):
     if request.method=='POST':
-        lon = Intercambio.objects.filter(Q(idServicio=id) & Q(inicio__gte=timezone.now()) & Q(confirma)).count()
         if Servicio.objects.get(id=request.POST.get('id')).idUsuario == request.user:
+            lon = Intercambio.objects.filter(Q(idServicio=id) & Q(inicio__gte=timezone.now()) & Q(confirmacion=1)).count()
             if lon>=1 and Servicio.objects.get(id=id).estado:
                 s = Servicio.objects.get(id=id)
                 context = {'s': s, 'mensaje': "Todavía tiene intercambios pendientes con este servicio"}
@@ -124,8 +124,6 @@ def servicio(request, id):
             else:
                 serv = Servicio.objects.get(id=request.POST.get('id'))
                 serv.estado = not serv.estado
-                print(serv.estado)
-                print(not serv.estado)
                 serv.save()
                 return HttpResponseRedirect('/exito')
         else:
