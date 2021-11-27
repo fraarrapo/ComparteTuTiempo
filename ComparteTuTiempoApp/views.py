@@ -240,26 +240,22 @@ def intercambio(request, id):
         if 'id1' in request.POST:
             if inter.idUsuarioDa == request.user and inter.confirmacion == 0:
                 if inter.idUsuarioRecibe.saldo-int((inter.fin-inter.inicio).total_seconds()//60)<0:
-                    i = Intercambio.objects.get(id=id)
-                    context = {'i': i, 'mensaje': "El usuario que solicitó el intercambio no cuenta con el saldo suficiente"}
+                    context = {'i': inter, 'mensaje': "El usuario que solicitó el intercambio no cuenta con el saldo suficiente"}
                     return render(request, 'detallesIntercambio.html', context)
                 elif inter.inicio<timezone.now():
-                    i = Intercambio.objects.get(id=id)
-                    context = {'i': i, 'mensaje': "La fecha solicitada para el intercambio ha pasado"}
                     inter.confirmacion = 3
                     inter.save()
+                    context = {'i': inter, 'mensaje': "La fecha solicitada para el intercambio ha pasado"}
+                    print(context)
                     return render(request, 'detallesIntercambio.html', context)
                 elif Intercambio.objects.filter(Q(inicio__range=[inter.inicio, inter.fin]) | Q(fin__range=[inter.inicio, inter.fin]) | Q(Q(inicio__lte=inter.inicio) & Q(fin__gte=inter.firm)) | Q(Q(inicio__gte=inter.inicio) & Q(fin__lte=inter.firm)) & Q(Q(idUsuarioDa=request.user) | Q(idUsuarioRecibe=request.user)) & Q(confirmacion=1)).count()>=1:
-                    i = Intercambio.objects.get(id=id)
-                    context = {'i': i, 'mensaje': "Ya participas en un intercambio en ese rango de tiempo"}
+                    context = {'i': inter, 'mensaje': "Ya participas en un intercambio en ese rango de tiempo"}
                     return render(request, 'detallesIntercambio.html', context)
                 elif Intercambio.objects.filter(Q(inicio__range=[inter.inicio, inter.fin]) | Q(fin__range=[inter.inicio, inter.fin]) | Q(Q(inicio__lte=inter.inicio) & Q(fin__gte=inter.firm)) | Q(Q(inicio__gte=inter.inicio) & Q(fin__lte=inter.firm)) & Q(Q(idUsuarioDa=inter.idUsuarioRecibe) | Q(idUsuarioRecibe=inter.idUsuarioRecibe)) & Q(confirmacion=1)).count()>=1:
-                    i = Intercambio.objects.get(id=id)
-                    context = {'i': i, 'mensaje': "El usuario que solicitó este intercambio ya ha acordado otro intercambio en este rango de tiempo"}
+                    context = {'i': inter, 'mensaje': "El usuario que solicitó este intercambio ya ha acordado otro intercambio en este rango de tiempo"}
                     return render(request, 'detallesIntercambio.html', context)
                 elif not inter.idServicio.estado:
-                    i = Intercambio.objects.get(id=id)
-                    context = {'i': i, 'mensaje': "El servicio solicitado está desactivado"}
+                    context = {'i': inter, 'mensaje': "El servicio solicitado está desactivado"}
                     return render(request, 'detallesIntercambio.html', context)
                 else:
                     inter.confirmacion = 1
@@ -305,9 +301,8 @@ def intercambio(request, id):
         else:
             return HttpResponseRedirect('/error')
     elif inter.idUsuarioDa == request.user or inter.idUsuarioRecibe == request.user:
-        i = Intercambio.objects.get(id=id)
-        valorar = timezone.now()>i.inicio
-        context = {'i': i, 'valorar': valorar}
+        valorar = timezone.now()>inter.inicio
+        context = {'i': inter, 'valorar': valorar}
         return render(request, 'detallesIntercambio.html', context)
     return HttpResponseRedirect('/error')
 

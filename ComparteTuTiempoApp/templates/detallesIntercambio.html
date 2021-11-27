@@ -21,11 +21,11 @@
             {% endif%}
         </div>
         <div class="row border">
-            {% if i.confirmacion == 0 and request.user == i.idUsuarioDa %}
-            <a style="color:#0000ff">INTERCAMBIO POR CONFIRMAR</a>
             {% if mensaje %}
             <p class="alert alert-danger" role="alert">{{ mensaje }}</p>
             {% endif%}
+            {% if i.confirmacion == 0 and request.user == i.idUsuarioDa %}
+            <a style="color:#0000ff">INTERCAMBIO POR CONFIRMAR</a>
             <form onsubmit="return confirm('Usted va a confirmar este intercambio');" id='formulario1' method='post' action=''>{% csrf_token %}
                 <input type='hidden' value='{{s.id}}' name='id1'>
                 <p><input class="btn btn-primary" type='submit' value='Confirmar el intercambio'/></p>
