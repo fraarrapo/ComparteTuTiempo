@@ -11,4 +11,5 @@ admin.site.register(Servicio)
 admin.site.register(Mensaje)
 admin.site.register(Categoria)
 admin.site.register(Conversacion)
+admin.site.register(Notificacion)
 # Register your models here.
