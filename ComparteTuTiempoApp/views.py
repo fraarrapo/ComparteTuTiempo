@@ -246,12 +246,11 @@ def intercambio(request, id):
                     inter.confirmacion = 3
                     inter.save()
                     context = {'i': inter, 'mensaje': "La fecha solicitada para el intercambio ha pasado"}
-                    print(context)
                     return render(request, 'detallesIntercambio.html', context)
-                elif Intercambio.objects.filter(Q(inicio__range=[inter.inicio, inter.fin]) | Q(fin__range=[inter.inicio, inter.fin]) | Q(Q(inicio__lte=inter.inicio) & Q(fin__gte=inter.firm)) | Q(Q(inicio__gte=inter.inicio) & Q(fin__lte=inter.firm)) & Q(Q(idUsuarioDa=request.user) | Q(idUsuarioRecibe=request.user)) & Q(confirmacion=1)).count()>=1:
+                elif Intercambio.objects.filter(Q(Q(inicio__range=[inter.inicio, inter.fin]) | Q(fin__range=[inter.inicio, inter.fin]) | Q(Q(inicio__lte=inter.inicio) & Q(fin__gte=inter.fin)) | Q(Q(inicio__gte=inter.inicio) & Q(fin__lte=inter.fin)) & Q(Q(idUsuarioDa=request.user) | Q(idUsuarioRecibe=request.user))) & Q(confirmacion=1)).count()>=1:
                     context = {'i': inter, 'mensaje': "Ya participas en un intercambio en ese rango de tiempo"}
                     return render(request, 'detallesIntercambio.html', context)
-                elif Intercambio.objects.filter(Q(inicio__range=[inter.inicio, inter.fin]) | Q(fin__range=[inter.inicio, inter.fin]) | Q(Q(inicio__lte=inter.inicio) & Q(fin__gte=inter.firm)) | Q(Q(inicio__gte=inter.inicio) & Q(fin__lte=inter.firm)) & Q(Q(idUsuarioDa=inter.idUsuarioRecibe) | Q(idUsuarioRecibe=inter.idUsuarioRecibe)) & Q(confirmacion=1)).count()>=1:
+                elif Intercambio.objects.filter(Q(Q(inicio__range=[inter.inicio, inter.fin]) | Q(fin__range=[inter.inicio, inter.fin]) | Q(Q(inicio__lte=inter.inicio) & Q(fin__gte=inter.fin)) | Q(Q(inicio__gte=inter.inicio) & Q(fin__lte=inter.fin)) & Q(Q(idUsuarioDa=inter.idUsuarioRecibe) | Q(idUsuarioRecibe=inter.idUsuarioRecibe))) & Q(confirmacion=1)).count()>=1:
                     context = {'i': inter, 'mensaje': "El usuario que solicitó este intercambio ya ha acordado otro intercambio en este rango de tiempo"}
                     return render(request, 'detallesIntercambio.html', context)
                 elif not inter.idServicio.estado:
@@ -268,7 +267,7 @@ def intercambio(request, id):
             else:
                 return HttpResponseRedirect('/error')
         elif 'id2' in request.POST:
-            if inter.idUsuarioDa == request.user and inter.confirmacion >= 2 and timezone.now()<inter.inicio:
+            if inter.idUsuarioDa == request.user and inter.confirmacion <= 2 and timezone.now()<inter.inicio:
                 notificacion = Notificacion(descripcion="El usuario " + request.user.username + " ha cancelado su intercambio", idUsuario=inter.idUsuarioRecibe, url="/intercambios/"+str(id))
                 notificacion.save()
                 inter.confirmacion = 3
@@ -276,7 +275,7 @@ def intercambio(request, id):
                 inter.idUsuarioRecibe.saldo = inter.idUsuarioRecibe.saldo+int((inter.fin-inter.inicio).total_seconds()//60)
                 inter.idUsuarioRecibe.save()
                 return HttpResponseRedirect('/intercambios/' + str(id))
-            elif inter.idUsuarioRecibe == request.user and inter.confirmacion >= 2 and timezone.now()<inter.inicio:
+            elif inter.idUsuarioRecibe == request.user and inter.confirmacion <= 2 and timezone.now()<inter.inicio:
                 notificacion = Notificacion(descripcion="El usuario " + request.user.username + " ha cancelado su intercambio", idUsuario=inter.idUsuarioDa, url="/intercambios/"+str(id))
                 notificacion.save()
                 inter.confirmacion = 3
@@ -340,7 +339,7 @@ def intercambios(request):
 @staff_member_required
 def reiniciarCategorias(request):
     if request.user.is_staff:
-        categorias = ['Coche y Moto','Belleza','Libros','Cámaras y fotografía','Teléfonos móviles y accesorios','Coleccionismo','Electrónica','Arte','Alimentación y bebidas','Salud y cuidado personal','Hogar y Cocina','Diseño independiente','Industria, empresa y ciencia','Música','Oficina','Aire libre','Informática','Mascotas','Software','Deportes y aire libre','Bricolaje y herramientas','Videojuegos','Plantas y jardinería']
+        categorias = ['Coche y Moto','Belleza','Libros','Cámaras y fotografía','Teléfonos móviles y accesorios','Coleccionismo','Electrónica','Arte','Alimentación y bebidas','Salud y cuidado personal','Hogar','Diseño independiente','Industria, empresa y ciencia','Música','Oficina','Aire libre','Informática','Mascotas','Software','Deportes y aire libre','Bricolaje y herramientas','Videojuegos','Plantas y jardinería','Cocina']
         Categoria.objects.all().delete()
         for x in categorias:
             categoria = Categoria(nombre=x)

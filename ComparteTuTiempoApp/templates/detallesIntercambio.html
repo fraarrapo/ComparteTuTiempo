@@ -10,7 +10,7 @@
 <div class="container d-flex justify-content-center vertical-center">
     <div class="col-8 text-center">
         <h1>Intercambio entre {{i.idUsuarioDa}} y {{i.idUsuarioRecibe}} </h1>
-        <div class="row border scrollable overflow-auto boton">
+        <div class="row border boton">
             <a href="/servicios/{{i.idServicio.id}}">Servicio: {{i.idServicio}}</a>
             <div><b>Fecha y hora de inicio:</b> {{i.inicio}}</div>
             <div><b>Fecha y hora de fin:</b> {{i.fin}}</div>
@@ -25,39 +25,43 @@
             <p class="alert alert-danger" role="alert">{{ mensaje }}</p>
             {% endif%}
             {% if i.confirmacion == 0 and request.user == i.idUsuarioDa %}
-            <a style="color:#0000ff">INTERCAMBIO POR CONFIRMAR</a>
+            <p class="alert alert-primary">INTERCAMBIO POR CONFIRMAR</p>
+            <div class="col-6 justify-content-center">
             <form onsubmit="return confirm('Usted va a confirmar este intercambio');" id='formulario1' method='post' action=''>{% csrf_token %}
                 <input type='hidden' value='{{s.id}}' name='id1'>
                 <p><input class="btn btn-primary" type='submit' value='Confirmar el intercambio'/></p>
             </form>
+            </div>
+                <div class="col-6 justify-content-center">
             <form onsubmit="return confirm('Usted va a cancelar este intercambio');" id='formulario2' method='post' action=''>{% csrf_token %}
                 <input type='hidden' value='{{s.id}}' name='id2'>
                 <p><input class="btn btn-danger" type='submit' value='Cancelar el intercambio'/></p>
             </form>
+                <div>
             {% elif request.user == i.idUsuarioRecibe and i.confirmacion == 0 %}
-            <a style="color:#0000ff">ESPERANDO CONFIRMACIÓN</a>
+            <p class="alert alert-primary">ESPERANDO CONFIRMACIÓN</p>
             <form onsubmit="return confirm('Usted va a cancelar este intercambio');" id='formulario2' method='post' action=''>{% csrf_token %}
                 <input type='hidden' value='{{s.id}}' name='id2'>
                 <p><input class="btn btn-danger" type='submit' value='Cancelar el intercambio'/></p>
             </form>
             {% elif i.confirmacion == 1 and not valorar%}
-            <a style="color:#00ff00">INTERCAMBIO CONFIRMADO</a>
+            <p class="alert alert-warning">INTERCAMBIO CONFIRMADO</p>
             <form onsubmit="return confirm('Usted va a cancelar este intercambio');" id='formulario2' method='post' action=''>{% csrf_token %}
                 <input type='hidden' value='{{s.id}}' name='id2'>
                 <p><input class="btn btn-danger" type='submit' value='Cancelar el intercambio'/></p>
             </form>
             {% elif i.confirmacion == 1 and request.user == i.idUsuarioRecibe and valorar%}
-            <a style="color:#ff6500">VALORA ESTE INTERCAMBIO ENTRE 0 Y 5</a></br>
+            <p class="alert alert-warning">VALORA ESTE INTERCAMBIO ENTRE 0 Y 5</p></br>
             <form id='formulario3' method='post' action=''>{% csrf_token %}
                 <p><input type="number" step="0.1" min="0" max="5" name="nota">
                     <input class="btn btn-primary" type='submit' value='Valorar'/></p>
             </form>
             {% elif i.confirmacion == 1 and request.user == i.idUsuarioDa and valorar%}
-            <a style="color:#ff6500">INTERCAMBIO POR VALORAR</a>
+            <p class="alert alert-warning">INTERCAMBIO POR VALORAR</p>
             {% elif i.confirmacion == 2 %}
-            <a style="color:#000000">INTERCAMBIO FINALIZADO</a>
+            <p class="alert alert-success">INTERCAMBIO FINALIZADO</p>
             {% elif i.confirmacion == 3 %}
-            <a style="color:#ff0000">INTERCAMBIO CANCELADO</a>
+            <p class="alert alert-danger">INTERCAMBIO CANCELADO</p>
             {% endif %}
         </div>
     </div>

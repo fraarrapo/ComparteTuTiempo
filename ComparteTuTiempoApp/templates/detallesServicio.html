@@ -12,7 +12,7 @@
 <div class="container d-flex justify-content-center vertical-center">
     <div class="col-8 text-center">
         <h1>Detalles del servicio</h1>
-        <div class="row border scrollable overflow-auto boton">
+        <div class="row border boton">
             <div><b>Servicio: {{s.nombre}}</b></div>
             <div><b>Descripcion:</b> {{s.descripcion}}</div>
             <div><b>Fecha y hora de creación:</b> {{s.creacion}}</div>
@@ -25,12 +25,12 @@
             <div><b>Usuario:</b> {{s.idUsuario}}</div>
             <div><b>Preferencias de contacto:</b> {{s.idUsuario.contacto}}</div>
                 {% if s.idUsuario.valoracion and s.idUsuario.valoracion > -1 %}
-            <div><b>Valoración:</b> {{s.idUsuario.valoracion}}</div>
+            <div><b>Valoración del usuario:</b> {{s.idUsuario.valoracion}}</div>
                 {% else %}
-                <div><b>Valoración:</b> Todavía no ha recibido valoraciones</div>
+                <div><b>Valoración del usuario:</b> Todavía no ha recibido valoraciones</div>
                 {% endif%}
             {% if not s.estado %}
-            <div style="color:#ff0000">Este servicio está inactivo</div>
+            <div class="alert alert-danger">Este servicio está inactivo</div>
             {% endif%}
         </div>
         <div class="row border">

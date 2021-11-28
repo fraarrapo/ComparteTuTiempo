@@ -6,6 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import *
 import re
+from django.forms import widgets
 
 
 # Create your forms here.
@@ -44,7 +45,7 @@ class FormNuevoUsuario(forms.ModelForm):
 class FormNuevoServUsuario(forms.ModelForm):
     OPTIONS = Categoria.objects.all()
     descripcion = forms.CharField(max_length=500, widget=forms.Textarea(attrs={'placeholder': 'Haz una descripción de tu servicio. La gente lo podrá encontrar buscando palabras clave', 'rows': '5'}))
-    categorias = forms.ModelMultipleChoiceField(OPTIONS, required=False)
+    categorias = forms.ModelMultipleChoiceField(OPTIONS, required=False, widget=widgets.SelectMultiple(attrs={'size': 10}), help_text='Para seleccionar varias, mantén pulsada la tecla "ctrl" mientras escoges las categorías')
 
     class Meta:
         model = Servicio
@@ -95,7 +96,7 @@ class FormNuevoIntercambio(forms.ModelForm):
         elif finForm < inicioForm:
             self.add_error('fin', "El fin no puede ser anterior al inicio")
             return False
-        elif Intercambio.objects.filter(Q(inicio__range=[inicioForm, finForm]) | Q(fin__range=[inicioForm, finForm]) | Q(Q(inicio__lte=inicioForm) & Q(fin__gte=finForm)) | Q(Q(inicio__gte=inicioForm) & Q(fin__lte=finForm)) & Q(Q(idUsuarioDa=usuarioRecibe) | Q(idUsuarioRecibe=usuarioRecibe)) & Q(confirmacion=1)).count()>=1:
+        elif Intercambio.objects.filter(Q(Q(inicio__range=[inicioForm, finForm]) | Q(fin__range=[inicioForm, finForm]) | Q(Q(inicio__lte=inicioForm) & Q(fin__gte=finForm)) | Q(Q(inicio__gte=inicioForm) & Q(fin__lte=finForm)) & Q(Q(idUsuarioDa=usuarioRecibe) | Q(idUsuarioRecibe=usuarioRecibe))) & Q(confirmacion=1)).count()>=1:
             self.add_error('inicio', "Ya tiene un intercambio en este rango")
             return False
         elif int((finForm-inicioForm).total_seconds()//60)>saldo:
@@ -117,7 +118,7 @@ class FormBusqueda(forms.Form):
     ciudad = forms.CharField(max_length=500, required=False)
     edad = forms.IntegerField(min_value=0, max_value=200, required=False)
     OPTIONS = Categoria.objects.all()
-    categorias = forms.ModelMultipleChoiceField(OPTIONS, required=False)
+    categorias = forms.ModelMultipleChoiceField(OPTIONS, required=False, widget=widgets.SelectMultiple(attrs={'size': 5}), help_text='Para seleccionar varias, mantén pulsada la tecla "ctrl" mientras escoges las categorías')
     lista=(
         ("-creacion", "Ultimas publicaciones"),
         ("-nota", "Nota"),
@@ -139,7 +140,7 @@ class FormEditUsuario(forms.ModelForm):
 class FormOrdenIntercambios(forms.Form):
     descripcion = forms.CharField(max_length=500, required=False, label='Palabras clave')
     OPTIONS = Categoria.objects.all()
-    categorias = forms.ModelMultipleChoiceField(OPTIONS, required=False)
+    categorias = forms.ModelMultipleChoiceField(OPTIONS, required=False, widget=widgets.SelectMultiple(attrs={'size': 10}), help_text='Para seleccionar varias, mantén pulsada la tecla "ctrl" mientras escoges las categorías')
     lista=(
         ("id", "Order de creación"),
         ("-nota", "Nota"),
