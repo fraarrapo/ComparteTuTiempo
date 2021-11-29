@@ -330,8 +330,11 @@ def intercambios(request):
             descripcion = form.cleaned_data['descripcion']
             q_descripcion = Q(idServicio__descripcion__icontains=descripcion) | Q(idUsuarioRecibe__username__icontains=descripcion) | Q(idUsuarioDa__username__icontains=descripcion) | Q(idServicio__nombre__icontains=descripcion) if form.cleaned_data['descripcion'] else Q(idServicio__descripcion__icontains='')
             categorias = form.cleaned_data['categorias']
-            q_categorias = Q(idServicio__categorias__in=categorias) if form.cleaned_data['categorias'] else (Q(idServicio__categorias__isnull=False) | Q(idServicio__categorias__isnull=True))
-            intercambios = Intercambio.objects.filter(Q(idUsuarioDa=request.user) | Q(idUsuarioRecibe=request.user) & q_descripcion & q_categorias).order_by(form.cleaned_data['orden'])
+            q_categorias = Q(idServicio__categorias__in=categorias)
+            if form.cleaned_data['categorias']:
+                intercambios = Intercambio.objects.filter(Q(Q(idUsuarioDa=request.user) | Q(idUsuarioRecibe=request.user)) & q_descripcion & q_categorias).order_by(form.cleaned_data['orden'])
+            else:
+                intercambios = Intercambio.objects.filter(Q(Q(idUsuarioDa=request.user) | Q(idUsuarioRecibe=request.user)) & q_descripcion).order_by(form.cleaned_data['orden'])
             context = {'intercambios': intercambios, 'formulario': form}
             return render(request, 'verIntercambios.html', context)
     else:
