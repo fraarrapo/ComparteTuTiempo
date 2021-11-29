@@ -10,6 +10,7 @@
 <body>
 {% include 'header.html' %}
 <div class="container d-flex justify-content-center align-items-center text-center vertical-center">
+    <div class="row border justify-content-center">
     <div class="col-8 text-center align-items-center justify-content-center">
         <h1>Registra un nuevo intercambio</h1>
         <form class="form-inline justify-content-center" id='formulario' method='post' action=''>{% csrf_token %}
@@ -17,6 +18,10 @@
             <p><input class="btn btn-primary" type='submit' value='Registrar'/></p>
         </form>
     </div>
+        <p class="alert alert-danger" role="alert">
+            ¡Cuidado si estás desde Mozilla! El formato es: dd/mm/aaaa HH:mm
+        </p>
+</div>
 </div>
 
 </body>
