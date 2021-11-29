@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="{% static 'reloj.png' %}"><title>Conversaciones</title>
+</head>
+<body>
+{% include 'header.html' %}
+<div class="container d-flex justify-content-center vertical-center">
+<div class="col-4 text-center">
+    <h1>Tus conversaciones</h1>
+    <div class="row border scrollable overflow-auto">
+        {% if mensajes %}
+        {% for m in mensajes %}
+        <div class="row border">
+            <a class="btn btn-outline-primary boton" href="/conversaciones/{% ifequal request.user m.idUsuarioOrigen %}{{m.idUsuarioDestino.id}}{% else %}{{m.idUsuarioOrigen.id}}{% endifequal %}" role="button">
+                <div><b>Conversación con: {% ifequal request.user m.idUsuarioOrigen %}{{m.idUsuarioDestino}}{% else %}{{m.idUsuarioOrigen}}{% endifequal %}</b></div><br>
+                <div>[{{m.fechaHora}}] {{m}}</div></a>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div>No hay conversaciones aún</div>
+        {% endif %}
+    </div>
+</div>
+</div>
+</body>
+</html>

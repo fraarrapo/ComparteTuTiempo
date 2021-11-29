@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,7 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-uigk5b=2qvkmyanxxhumrv=#tp&e+9u^%@)%k$%228upr45fb%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+
+ADMINS = [('Paco', 'pacoarroyozafra@gmail.com')]
 
 ALLOWED_HOSTS = []
 
@@ -74,11 +78,26 @@ WSGI_APPLICATION = 'ComparteTuTiempo.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+  'default': {
+       'ENGINE': 'django.db.backends.mysql',
+       'NAME': 'tfg',
+       'USER': 'root',
+       'PASSWORD': 'practica',
+       'HOST': 'localhost',
+      'PORT': '3306',
+  }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'compartetutiempo',
+#         'USER': 'administrador@compartetutiempo',
+#         'PASSWORD': '123456aA$',
+#         'HOST': 'compartetutiempo.mysql.database.azure.com',
+#         'PORT': '3306',
+#     }
+# }
 
 
 # Password validation
@@ -117,9 +136,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'ComparteTuTiempoApp.Usuario'
+
+django_heroku.settings(locals())

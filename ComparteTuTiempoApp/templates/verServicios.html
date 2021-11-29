@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+    <link rel="stylesheet" href="{% static 'general.css' %}">
+    <meta charset="UTF-8">
+    <link rel="icon" href="{% static 'reloj.png' %}"><title>Ver servicios</title>
+</head>
+<body>
+{% include 'header.html' %}
+<div>
+    <div class="container d-flex justify-content-center vertical-center">
+        <div class="row">
+            <div class="col-lg-5 col-12 text-center align-self-center">
+                <form ALIGN='center' id='formulario' method='post' action=''>{% csrf_token %}
+                    <table class="table table-responsive">{{formulario}}</table>
+                    <p><input class="btn btn-primary" type='submit' value='Buscar'/></p>
+                </form>
+            </div>
+            <div class="col-lg-7 col-12 text-center">
+                <h1>Explora los servicios ofrecidos</h1>
+                <div class="row border scrollable overflow-auto">
+                {% if servicios %}
+                {% for s in servicios %}
+                <div class="row border">
+                    <a class="btn btn-outline-primary boton" href="/servicios/{{s.id}}" role="button">
+                    <div><b>{{s.idUsuario.first_name}} {{s.idUsuario.last_name}}{% if s.idUsuario.ciudad %},
+                        {{s.idUsuario.ciudad}}{% endif %}{% if s.idUsuario.edad %}, {{s.idUsuario.edad}}{% endif %}</b></div>
+                    <div><b>{{s.nombre}}</b></div>
+                    <div>{{s.descripcion}}</div></a>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div>No hay servicios aún</div>
+                {% endif %}
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

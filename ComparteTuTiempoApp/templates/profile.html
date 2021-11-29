@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'general.css' %}">
+    <link rel="icon" href="{% static 'reloj.png' %}"><title>Ver perfil</title>
+</head>
+<body>
+{% include 'header.html' %}
+<div class="container d-flex justify-content-center vertical-center">
+    <div class="row">
+<div class="col-4 text-center">
+    <h1>Tus datos</h1>
+    <div class="row border scrollable overflow-auto">
+            <div><b>Nombre de usuario: {{request.user.username}}</b></div>
+            <div><b>Nombre: {{request.user.first_name}}</b></div>
+            <div><b>Apellidos: {{request.user.last_name}}</b></div>
+            <div><b>Saldo:</b> {{request.user.saldo}}</div>
+            <div><b>Ciudad:</b> {{request.user.ciudad}}</div>
+            <div><b>Edad:</b> {{request.user.edad}}</div>
+            <div><b>Correo:</b> {{request.user.email}}</div>
+            <div><b>Formas de contacto:</b> {{request.user.contacto}}</div>
+            {% if request.user.valoracion and request.user.valoracion > -1 %}
+            <div><b>Valoración:</b> {{request.user.valoracion}}</div>
+            {% else %}
+            <div><b>Valoración:</b> Todavía no ha recibido valoraciones</div>
+            {% endif%}
+        </div>
+        <div class="col">
+        <a class="btn btn-primary boton mt-2" href="/editarPerfil" role="button">
+            <div><b><img class="img-responsive" src="{% static 'edit.png' %}" width="15" height="15"> Editar datos</b></div></a>
+        </div>
+    </div>
+<div class="col-4 text-center">
+    <h1>Tus servicios</h1>
+    <div class="row border scrollable overflow-auto">
+        {% if servicios %}
+        {% for s in servicios %}
+        <div class="row border">
+            <a class="btn btn-outline-primary boton" href="/servicios/{{s.id}}" role="button">
+                <div><b>{{s.nombre}}</b></div>
+                <div>{{s.descripcion}}</div>
+                <div>Creado desde: {{s.creacion}}</div></a>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div>No hay servicios aún</div>
+        {% endif %}
+    </div>
+    <a class="btn btn-primary boton mt-2" href="/nuevoServicio" role="button">
+        <div><b><img class="img-responsive" src="{% static 'add.png' %}" width="15" height="15"> Añadir un nuevo servicio</b></div></a>
+</div>
+<div class="col-4 text-center">
+    <h1>Tus intercambios</h1>
+    <div class="row scrollable overflow-auto">
+        {% if intercambios %}
+        {% for i in intercambios %}
+        <div class="row border">
+            <a class="btn boton {% if 0 == i.confirmacion %}btn-outline-primary{% elif 1 == i.confirmacion %}
+            btn-outline-warning{% elif 2 == i.confirmacion %}btn-outline-success{% elif 3 == i.confirmacion %}
+            btn-outline-danger{% endif %}" href="/intercambios/{{i.id}}" role="button">
+                {% ifequal i.idUsuarioDa request.user %}
+                <div><b>Servicio prestado a {{i.idUsuarioRecibe}}</b></div>
+                {% else %}
+                <div><b>Servicio prestado por {{i.idUsuarioDa}}</b></div>
+                {% endifequal %}
+                <div>Desde {{i.inicio}} hasta {{i.fin}}</div></a>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div>No hay intercambios aún</div>
+        {% endif %}
+    </div>
+    <a class="btn btn-primary boton mt-2" href="/servicios" role="button">
+        <div><b><img class="img-responsive" src="{% static 'lupa.png' %}" width="15" height="15"> Ver servicios</b></div></a>
+</div>
+</div>
+</div>
+</body>
+</html>

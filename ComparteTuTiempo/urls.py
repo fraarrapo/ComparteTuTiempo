@@ -15,7 +15,33 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from ComparteTuTiempoApp import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('registrar/', views.registro),
+    path('ingresar/', views.ingreso),
+    path('salir/', views.cerrar),
+    path('', views.inicio),
+    path('nuevoServicio/', views.crearServicioUsuario),
+    path('servicios/', views.verServicios),
+    path('perfil/', views.verPerfil),
+    path('servicios/<int:id>/', views.servicio),
+    path('servicios/editar/<int:id>/', views.editServicioUsuario),
+    path('exito/', views.exito),
+    path('error/', views.error),
+    path('conversaciones/', views.conversaciones),
+    path('conversaciones/<int:id>/', views.conversacion),
+    path('notificaciones/', views.notificaciones),
+    path('servicios/crearIntercambio/<int:id>/', views.crearIntercambioUsuario),
+    path('intercambios/<int:id>/', views.intercambio),
+    path('editarPerfil/', views.editUsuario),
+    path('intercambios/', views.intercambios),
+    path('reiniciarCategorias/', views.reiniciarCategorias),
 ]
+
+handler404 = 'ComparteTuTiempoApp.views.error404'
+
+handler403 = 'ComparteTuTiempoApp.views.error403'
+
+handler400 = 'ComparteTuTiempoApp.views.error400'
