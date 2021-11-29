@@ -91,10 +91,14 @@ def verServicios(request):
             edad = form.cleaned_data['edad']
             q_edad = Q(idUsuario__edad=edad) if form.cleaned_data['edad']!=None else Q(idUsuario__edad__gte=-1)
             categorias = form.cleaned_data['categorias']
-            q_categorias = Q(categorias__in=categorias) if form.cleaned_data['categorias'] else (Q(categorias__isnull=False) | Q(categorias__isnull=True))
-            servicios = Servicio.objects.filter((q_descripcion | q_titulo) & q_ciudad & q_edad & q_categorias & Q(estado=True)).order_by(form.cleaned_data['orden'])
+            q_categorias = Q(categorias__in=categorias)
+            if form.cleaned_data['categorias']:
+                servicios = Servicio.objects.filter((q_descripcion | q_titulo) & q_ciudad & q_edad & q_categorias & Q(estado=True)).order_by(form.cleaned_data['orden'])
+            else:
+                servicios = Servicio.objects.filter((q_descripcion | q_titulo) & q_ciudad & q_edad & Q(estado=True)).order_by(form.cleaned_data['orden'])
             form = FormBusqueda(request.POST)
             context = {'servicios': servicios, 'formulario': form}
+            print(servicios)
             return render(request, 'verServicios.html', context)
         else:
             return HttpResponseRedirect('/error')
