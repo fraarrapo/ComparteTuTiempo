@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
 from pathlib import Path
 import os
 import django_heroku
@@ -31,16 +30,16 @@ ADMINS = [('Paco', 'pacoarroyozafra@gmail.com')]
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.contenttypes',
     'django.contrib.admin',
     'django.contrib.auth',
-    'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'ComparteTuTiempoApp',
 ]
 
 MIDDLEWARE = [
@@ -77,27 +76,27 @@ WSGI_APPLICATION = 'ComparteTuTiempo.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-  'default': {
-       'ENGINE': 'django.db.backends.mysql',
-       'NAME': 'tfg',
-       'USER': 'root',
-       'PASSWORD': 'practica',
-       'HOST': 'localhost',
-      'PORT': '3306',
-  }
-}
-
 # DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'compartetutiempo',
-#         'USER': 'administrador@compartetutiempo',
-#         'PASSWORD': '123456aA$',
-#         'HOST': 'compartetutiempo.mysql.database.azure.com',
-#         'PORT': '3306',
-#     }
+#   'default': {
+#        'ENGINE': 'django.db.backends.mysql',
+#        'NAME': 'tfg',
+#        'USER': 'root',
+#        'PASSWORD': 'practica',
+#        'HOST': 'localhost',
+#       'PORT': '3306',
+#   }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'compartetutiempo',
+        'USER': 'administrador@compartetutiempo',
+        'PASSWORD': '123456aA$',
+        'HOST': 'compartetutiempo.mysql.database.azure.com',
+        'PORT': '3306',
+    }
+}
 
 
 # Password validation
@@ -122,9 +121,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-es'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Madrid'
 
 USE_I18N = True
 
