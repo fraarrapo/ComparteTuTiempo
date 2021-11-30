@@ -271,7 +271,7 @@ def intercambio(request, id):
             else:
                 return HttpResponseRedirect('/error')
         elif 'id2' in request.POST:
-            if inter.idUsuarioDa == request.user and inter.confirmacion <= 2 and timezone.now()<inter.inicio:
+            if inter.idUsuarioDa == request.user and inter.confirmacion < 2 and timezone.now()<inter.inicio:
                 notificacion = Notificacion(descripcion="El usuario " + request.user.username + " ha cancelado su intercambio", idUsuario=inter.idUsuarioRecibe, url="/intercambios/"+str(id))
                 notificacion.save()
                 inter.confirmacion = 3
@@ -279,7 +279,7 @@ def intercambio(request, id):
                 inter.idUsuarioRecibe.saldo = inter.idUsuarioRecibe.saldo+int((inter.fin-inter.inicio).total_seconds()//60)
                 inter.idUsuarioRecibe.save()
                 return HttpResponseRedirect('/intercambios/' + str(id))
-            elif inter.idUsuarioRecibe == request.user and inter.confirmacion <= 2 and timezone.now()<inter.inicio:
+            elif inter.idUsuarioRecibe == request.user and inter.confirmacion < 2 and timezone.now()<inter.inicio:
                 notificacion = Notificacion(descripcion="El usuario " + request.user.username + " ha cancelado su intercambio", idUsuario=inter.idUsuarioDa, url="/intercambios/"+str(id))
                 notificacion.save()
                 inter.confirmacion = 3
